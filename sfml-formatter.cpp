@@ -10,53 +10,49 @@ int main()
 
 
     sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
-    sf::RectangleShape btn(sf::Vector2f(50.f, 30.f));
-
     sf::Font font;
     sf::Text header;
+    sf::Text fieldMm;
+    sf::Text fieldSm;
+    sf::Text fieldDm;
+    sf::Text fieldM;
+    sf::Text fieldKm;
     sf::Text subtitle;
-
-    font.loadFromFile("./font/arialbd.ttf");
 
     vector <sf::RectangleShape> btns;
     vector <sf::Text> btnsText;
 
     const sf::Vector2f SIZE_BTN(50.f, 30.f);
 
-    for (int i = 0; i < 10; i++)
-    {
-        sf::RectangleShape btn(sf::Vector2f(50.f, 30.f));
-        sf::Text text;
+    sf"
 
+    for (int i = 0; i < 10; i++)
+    {   sf::RectangleShape btn(SIZE_BTN);
+        sf::Text text;
         text.setFont(font);
         text.setCharacterSize(18);
         text.setString(to_string(i));
         text.setFillColor(sf::Color::Black);
 
-
         btn.setPosition(sf::Vector2f(i * 60, 100));
         btns.push_back(btn);
         sf::Vector2f position = btn.getPosition();
 
-        text.setPosition(sf::Vector2f(position.x + 15, 106));
+        text.setPosition(sf::Vector2f(position.x + 15, position.y + 6));
         btnsText.push_back(text);
-
-
     }
+    font.loadFromFile("./font/arialbd.ttf");
 
-
+    subtitle.setFont(font);
+    subtitle.setCharacterSize(18);
+    subtitle.setString("input your value: ...");
+    subtitle.setPosition(sf::Vector2f(0, 30));
     header.setFont(font);
     header.setString("values formatter");
     header.setCharacterSize(24);
 
-    subtitle.setFont(font);
-    subtitle.setString("input your value: ...");
-    subtitle.setCharacterSize(18);
-    subtitle.setPosition(sf::Vector2f(0, 30));
-
     while (window.isOpen())
     {
-
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -72,14 +68,12 @@ int main()
 
                     auto mousePosition = event.mouseButton;
 
-                    for (int i = 0; i < btns.size();i++)
-                    {
-
-
+                    for (int i = 0; i < btns.size(); i++) {
+                    
                         if (mousePosition.x >= btns[i].getPosition().x &&
                             mousePosition.x <= btns[i].getPosition().x + SIZE_BTN.x &&
                             mousePosition.y >= btns[i].getPosition().y &&
-                            mousePosition.y <= btns[i].getPosition().x + SIZE_BTN.y) {
+                            mousePosition.y <= btns[i].getPosition().y + SIZE_BTN.y) {
                             
                            
                             btns[i].setFillColor(sf::Color::Green);
@@ -105,6 +99,7 @@ int main()
 
             window.draw(header);
             window.draw(subtitle);
+
             for (auto i : btns) {
                 window.draw(i);
             }
