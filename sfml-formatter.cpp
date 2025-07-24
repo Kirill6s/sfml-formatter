@@ -4,7 +4,9 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "Button.h"
 using namespace std;
+
 int main(){
 
 
@@ -13,8 +15,30 @@ int main(){
     sf::Text header;
     sf::Text subtitle;
 
-    vector <sf::RectangleShape> btns;
-    vector <sf::Text> btnsText;
+
+    const sf::Vector2f SIZE_BTN(50.f, 30.f);
+
+    vector<Button> buttons;
+
+    for (int i = 0; i < 12; i++) {
+        Button button(SIZE_BTN, font);
+
+        if (i == 10) {
+             button.setText(".");
+        }
+        else if (i == 11) {
+             button.setText("C");
+        }
+        else {
+            button.setText(to_string(i));
+        }
+            
+            button.setPosition(sf::Vector2f(i * 60, 100));
+            buttons.push_back(button);
+        
+    }
+
+   
     vector <sf::RectangleShape> fieldsBack;;
     vector <sf::Text> fields;
     vector <sf::Text> fieldsName;
@@ -23,7 +47,6 @@ int main(){
 
 
 
-    const sf::Vector2f SIZE_BTN(50.f, 30.f);
     const sf::Vector2f SIZE_FIELD(300.f, 30.f);
 
     for (int i = 0; i < 5; i++) {
@@ -39,6 +62,7 @@ int main(){
         textName.setCharacterSize(18);
         textName.setString(names[i]);
         textName.setFillColor(sf::Color::White);
+
         back.setPosition(sf::Vector2f(65, 150 + i * 50));
         fieldsBack.push_back(back);
         sf::Vector2f position = back.getPosition();
@@ -47,31 +71,6 @@ int main(){
 
         fieldsName.push_back(textName);
         fields.push_back(text);
-    }
-
-    for (int i = 0; i < 12; i++){   
-        sf::RectangleShape btn(SIZE_BTN);
-        sf::Text text;
-        text.setFont(font);
-        text.setCharacterSize(18);
-        if (i == 10) {
-            text.setString(".");
-        }
-        else if (i == 11) {
-            text.setString("C");
-        }
-        else {
-            text.setString(to_string(i));
-        }
-        
-        text.setFillColor(sf::Color::Black);
-
-        btn.setPosition(sf::Vector2f(i * 60, 100));
-        btns.push_back(btn);
-        sf::Vector2f position = btn.getPosition();
-
-        text.setPosition(sf::Vector2f(position.x + 15, position.y + 6));
-        btnsText.push_back(text);
     }
 
     sf::RectangleShape btn(SIZE_BTN);
@@ -102,13 +101,13 @@ int main(){
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     auto mousePosition = event.mouseButton;
-                    for (int i = 0; i < btns.size(); i++) {
-                        if (mousePosition.x >= btns[i].getPosition().x &&
-                            mousePosition.x <= btns[i].getPosition().x + SIZE_BTN.x &&
-                            mousePosition.y >= btns[i].getPosition().y &&
-                            mousePosition.y <= btns[i].getPosition().y + SIZE_BTN.y) {
+                    for (int i = 0; i < buttons.size(); i++) {
+                        if (mousePosition.x >= buttons[i].getPosition().x &&
+                            mousePosition.x <= buttons[i].getPosition().x + SIZE_BTN.x &&
+                            mousePosition.y >= buttons[i].getPosition().y &&
+                            mousePosition.y <= buttons[i].getPosition().y + SIZE_BTN.y) {
 
-                            btns[i].setFillColor(sf::Color::Green);
+                            buttons[i].on();
                             auto currentString = fields[activeField].getString();
                             if (i == 10) {
                                 fields[activeField].setString(currentString + ".");
@@ -119,7 +118,7 @@ int main(){
                             else {
                                 text.setString(to_string(i));
 
-                                auto num = btnsText[i].getString().toAnsiString();
+                                auto num = buttons[i].getText().toAnsiString();
                                
                                 auto currentNum = stod(fields[activeField].getString().toAnsiString());
                                 if (currentNum == 0) {
@@ -141,8 +140,8 @@ int main(){
                 }
             }
             else {
-                for (int i = 0; i < btns.size(); i++) {
-                    btns[i].setFillColor(sf::Color::White);
+                for (int i = 0; i < buttons.size(); i++) {
+                    buttons[i].off();
                 }
             }
         }
@@ -172,17 +171,15 @@ int main(){
         for (auto i : fieldsName) {
             window.draw(i);
         }
-        for (auto i : btns) {
-            window.draw(i);
-        }
-        for (auto i : btnsText) {
-            window.draw(i);
-        }
         for (auto i : fieldsBack) {
             window.draw(i);
         }
         for (auto i : fields) {
             window.draw(i);
+        }
+
+        for (auto btn : buttons) {
+            btn.draw(window);
         }
         window.display();
 
